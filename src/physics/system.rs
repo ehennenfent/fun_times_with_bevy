@@ -6,6 +6,7 @@ use rand::Rng;
 
 #[derive(Component, Default)]
 pub struct Physics2D {
+    pub position: Vec2,
     pub velocity: Vec2,
     pub acceleration: Vec2,
 }
@@ -27,22 +28,21 @@ impl Plugin for PhysicsPlugin {
     }
 }
 
-pub fn physics_2d(time: Res<Time>, mut sprite_position: Query<(&mut Physics2D, &mut Transform)>) {
-    for (mut data, mut transform) in sprite_position.iter_mut() {
+pub fn physics_2d(time: Res<Time>, mut sprite_position: Query<&mut Physics2D>) {
+    for mut data in sprite_position.iter_mut() {
         // bevy has sufficiently confused borrowck to not know that different struct fields can
         // be accessed independently, so we have to do a sneaky copy of the fields here.
         // TODO: make this a teensy bit faster with unsafe code
+        let v = data.velocity;
         let a = data.acceleration;
 
-        transform.translation.x += data.velocity.x * time.delta_seconds();
-        transform.translation.y += data.velocity.y * time.delta_seconds();
-
+        data.position += v * time.delta_seconds();
         data.velocity += a * time.delta_seconds();
 
-        if (transform.translation.x <= -1. * BOUNDS) || (transform.translation.x >= BOUNDS) {
+        if (data.position.x <= -1. * BOUNDS) || (data.position.x >= BOUNDS) {
             data.velocity.x *= -1.0;
         }
-        if (transform.translation.y <= -1. * BOUNDS) || (transform.translation.y >= BOUNDS) {
+        if (data.position.y <= -1. * BOUNDS) || (data.position.y >= BOUNDS) {
             data.velocity.y *= -1.0;
         }
     }
