@@ -1,11 +1,14 @@
 mod grid;
+mod logistics;
 mod physics;
 
 const SIZE: f32 = 20.0;
 
 use bevy::prelude::*;
+
 use grid::GridPlugin;
 use physics::{Physics2D, PhysicsPlugin};
+use logistics::LogisticsPlugin;
 
 fn main() {
     App::new()
@@ -19,6 +22,7 @@ fn main() {
         .add_startup_system(setup)
         .add_plugin(PhysicsPlugin)
         .add_plugin(GridPlugin)
+        .add_plugin(LogisticsPlugin)
         .run();
 }
 
