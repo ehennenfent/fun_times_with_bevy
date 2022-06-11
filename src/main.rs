@@ -6,9 +6,10 @@ const SIZE: f32 = 20.0;
 
 use bevy::prelude::*;
 
+use crate::logistics::{DamageEvent, Energy, HealEvent, Health};
 use grid::GridPlugin;
-use physics::{Physics2D, PhysicsPlugin};
 use logistics::LogisticsPlugin;
+use physics::{Physics2D, PhysicsPlugin};
 
 fn main() {
     App::new()
@@ -18,6 +19,8 @@ fn main() {
             height: 1024.0,
             ..default()
         })
+        .add_event::<DamageEvent>()
+        .add_event::<HealEvent>()
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup)
         .add_plugin(PhysicsPlugin)
@@ -41,7 +44,9 @@ fn setup(mut commands: Commands) {
             position: Default::default(),
             velocity: Default::default(),
             acceleration: Default::default(),
-        });
+        })
+        .insert(Energy::empty(10.))
+        .insert(Health::full(10));
 
     commands
         .spawn_bundle(SpriteBundle {

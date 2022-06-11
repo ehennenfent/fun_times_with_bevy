@@ -2,6 +2,8 @@ const BOUNDS: f32 = 512.;
 
 use bevy::{core::FixedTimestep, prelude::*};
 
+use crate::logistics::Energy;
+use crate::Health;
 use rand::Rng;
 
 #[derive(Component, Default)]
@@ -23,7 +25,8 @@ impl Plugin for PhysicsPlugin {
             FixedUpdateStage,
             SystemStage::parallel()
                 .with_run_criteria(FixedTimestep::step(3.0))
-                .with_system(random_acceleration),
+                .with_system(random_acceleration)
+                .with_system(damage_if_no_energy),
         );
     }
 }
@@ -55,5 +58,13 @@ pub fn random_acceleration(mut sprite_physics: Query<&mut Physics2D>) {
         data.velocity = a * 100.;
         // data.acceleration = a.scale(50.);
         // data.velocity = data.velocity.scale(0.5);
+    }
+}
+
+pub fn damage_if_no_energy(mut stats: Query<(&mut Health, &Energy)>) {
+    for (mut health, energy) in stats.iter_mut() {
+        if energy.ep <= 0.0 {
+            health.hp -= 1;
+        }
     }
 }
