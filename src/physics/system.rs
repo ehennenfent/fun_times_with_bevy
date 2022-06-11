@@ -13,21 +13,11 @@ pub struct Physics2D {
     pub acceleration: Vec2,
 }
 
-#[derive(Debug, Hash, PartialEq, Eq, Clone, StageLabel)]
-struct FixedUpdateStage;
-
 pub struct PhysicsPlugin;
 
 impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(physics_2d).add_stage_after(
-            CoreStage::Update,
-            FixedUpdateStage,
-            SystemStage::parallel()
-                .with_run_criteria(FixedTimestep::step(3.0))
-                .with_system(random_acceleration)
-                .with_system(damage_if_no_energy),
-        );
+        app.add_system(physics_2d);
     }
 }
 
@@ -47,24 +37,6 @@ pub fn physics_2d(time: Res<Time>, mut sprite_position: Query<&mut Physics2D>) {
         }
         if (data.position.y <= -1. * BOUNDS) || (data.position.y >= BOUNDS) {
             data.velocity.y *= -1.0;
-        }
-    }
-}
-
-pub fn random_acceleration(mut sprite_physics: Query<&mut Physics2D>) {
-    for mut data in sprite_physics.iter_mut() {
-        let (x, y): (f32, f32) = rand::thread_rng().gen();
-        let a: Vec2 = Vec2::new(x * 2. - 1., y * 2. - 1.);
-        data.velocity = a * 100.;
-        // data.acceleration = a.scale(50.);
-        // data.velocity = data.velocity.scale(0.5);
-    }
-}
-
-pub fn damage_if_no_energy(mut stats: Query<(&mut Health, &Energy)>) {
-    for (mut health, energy) in stats.iter_mut() {
-        if energy.ep <= 0.0 {
-            health.hp -= 1;
         }
     }
 }

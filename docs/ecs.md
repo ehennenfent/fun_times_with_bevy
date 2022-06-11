@@ -7,7 +7,13 @@
 ### Energy
 ### Team
 ### NextAction
+### Decide
+
 ### OldActions
-### Brain
 
 # Systems
+
+# Parameters
+* speed
+* stealth
+* 
