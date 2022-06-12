@@ -6,6 +6,7 @@ mod physics;
 const SIZE: f32 = 20.0;
 
 use bevy::prelude::*;
+use rand::{Rng, thread_rng};
 
 use crate::ai::{Action, AiPlugin, Decide, NextAction};
 use crate::logistics::{DamageEvent, Energy, HealEvent, Health};
@@ -13,8 +14,15 @@ use grid::GridPlugin;
 use logistics::LogisticsPlugin;
 use physics::{Physics2D, PhysicsPlugin};
 
-pub fn decide_green() -> Option<Action> {
-    Some(Action::MoveAbsolute(Vec2::new(500., 100.)))
+pub fn decide_green(time: &Res<Time>) -> Option<Action> {
+    if time.time_since_startup().as_millis() % 3000 < 12  {
+        let x = thread_rng().gen_range(-500. .. 500.);
+        let y = thread_rng().gen_range(-500. .. 500.);
+        Some(Action::MoveAbsolute(Vec2::new(x, y)))
+    }
+    else {
+        None
+    }
 }
 
 fn main() {

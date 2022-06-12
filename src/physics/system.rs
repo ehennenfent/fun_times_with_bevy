@@ -1,10 +1,6 @@
 const BOUNDS: f32 = 512.;
 
-use bevy::{core::FixedTimestep, prelude::*};
-
-use crate::logistics::Energy;
-use crate::Health;
-use rand::Rng;
+use bevy::prelude::*;
 
 #[derive(Component, Default)]
 pub struct Physics2D {

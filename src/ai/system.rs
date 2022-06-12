@@ -1,4 +1,4 @@
-use crate::ai::{Decide, NextAction};
+use crate::ai::{Decide, Locals, NextAction};
 use crate::{Action, Physics2D};
 use bevy::prelude::*;
 
@@ -11,24 +11,25 @@ impl Plugin for AiPlugin {
     }
 }
 
-fn decide_next_action(mut q: Query<(&Decide, &mut NextAction)>) {
+fn decide_next_action(time: Res<Time>, mut q: Query<(&Decide, &mut NextAction)>) {
     for (decider, mut next_action) in q.iter_mut() {
-        next_action.action = (decider.choose_action)()
+        if let Some(action) = (decider.choose_action)(&time) {
+            next_action.action = action;
+        }
     }
 }
 
 fn perform_next_action(time: Res<Time>, mut q: Query<(&mut Physics2D, &NextAction)>) {
     for (mut physics, action) in q.iter_mut() {
-        if let Some(a) = &action.action {
-            match a {
+            match &action.action {
                 Action::MoveAbsolute(target_pos) => {
                     let along_vector = *target_pos - physics.position;
                     move_along_vec(&time, &mut physics, &along_vector);
                 }
                 Action::MoveRelative(delta) => move_along_vec(&time, &mut physics, delta),
+                Action::Wait => {}
                 _ => todo!(),
             }
-        }
     }
 }
 
