@@ -4,7 +4,8 @@ pub use system::*;
 use crate::logistics::HP;
 use bevy::prelude::*;
 
-pub type Locals = [u8; 1024*16];
+pub type Locals = [u8; 1024 * 16];
+pub type Decider = fn(&Res<Time>, locals: Locals) -> Option<Action>;
 
 #[derive(Debug)]
 pub enum Action {
@@ -18,7 +19,7 @@ pub enum Action {
 
 #[derive(Component)]
 pub struct Decide {
-    pub choose_action: fn(&Res<Time>, locals: Locals) -> Option<Action>,
+    pub choose_action: Decider,
     pub local_storage: Locals,
 }
 

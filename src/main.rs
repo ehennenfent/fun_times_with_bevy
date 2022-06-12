@@ -2,6 +2,7 @@ mod ai;
 mod grid;
 mod logistics;
 mod physics;
+mod teams;
 
 const SIZE: f32 = 20.0;
 
