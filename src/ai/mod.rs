@@ -30,7 +30,7 @@ pub struct NextAction {
 impl Default for NextAction {
     fn default() -> Self {
         NextAction {
-            action: Action::Wait
+            action: Action::Wait,
         }
     }
 }

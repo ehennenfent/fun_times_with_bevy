@@ -1,4 +1,4 @@
-use crate::ai::{Decide, Locals, NextAction};
+use crate::ai::{Decide, NextAction};
 use crate::{Action, Physics2D};
 use bevy::prelude::*;
 
@@ -21,15 +21,15 @@ fn decide_next_action(time: Res<Time>, mut q: Query<(&Decide, &mut NextAction)>)
 
 fn perform_next_action(time: Res<Time>, mut q: Query<(&mut Physics2D, &NextAction)>) {
     for (mut physics, action) in q.iter_mut() {
-            match &action.action {
-                Action::MoveAbsolute(target_pos) => {
-                    let along_vector = *target_pos - physics.position;
-                    move_along_vec(&time, &mut physics, &along_vector);
-                }
-                Action::MoveRelative(delta) => move_along_vec(&time, &mut physics, delta),
-                Action::Wait => {}
-                _ => todo!(),
+        match &action.action {
+            Action::MoveAbsolute(target_pos) => {
+                let along_vector = *target_pos - physics.position;
+                move_along_vec(&time, &mut physics, &along_vector);
             }
+            Action::MoveRelative(delta) => move_along_vec(&time, &mut physics, delta),
+            Action::Wait => {}
+            _ => todo!(),
+        }
     }
 }
 
