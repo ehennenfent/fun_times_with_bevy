@@ -13,7 +13,7 @@ impl Plugin for AiPlugin {
 
 fn decide_next_action(time: Res<Time>, mut q: Query<(&Decide, &mut NextAction)>) {
     for (decider, mut next_action) in q.iter_mut() {
-        if let Some(action) = (decider.choose_action)(&time) {
+        if let Some(action) = (decider.choose_action)(&time, decider.local_storage) {
             next_action.action = action;
         }
     }

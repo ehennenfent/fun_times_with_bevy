@@ -8,13 +8,13 @@ const SIZE: f32 = 20.0;
 use bevy::prelude::*;
 use rand::{thread_rng, Rng};
 
-use crate::ai::{Action, AiPlugin, Decide, NextAction};
+use crate::ai::{Action, AiPlugin, Decide, Locals, NextAction};
 use crate::logistics::{DamageEvent, Energy, HealEvent, Health};
 use grid::GridPlugin;
 use logistics::LogisticsPlugin;
 use physics::{Physics2D, PhysicsPlugin};
 
-pub fn decide_green(time: &Res<Time>) -> Option<Action> {
+pub fn decide_green(time: &Res<Time>, locals: Locals) -> Option<Action> {
     if time.time_since_startup().as_millis() % 3000 < 12 {
         let x = thread_rng().gen_range(-500. ..500.);
         let y = thread_rng().gen_range(-500. ..500.);
@@ -78,6 +78,7 @@ fn setup(mut commands: Commands) {
         })
         .insert(Decide {
             choose_action: decide_green,
+            local_storage: [0u8; 1024 * 16],
         })
         .insert(NextAction::default());
 

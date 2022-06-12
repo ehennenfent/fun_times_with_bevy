@@ -4,7 +4,7 @@ pub use system::*;
 use crate::logistics::HP;
 use bevy::prelude::*;
 
-pub trait Locals: Send + Sync {}
+pub type Locals = [u8; 1024*16];
 
 #[derive(Debug)]
 pub enum Action {
@@ -18,8 +18,8 @@ pub enum Action {
 
 #[derive(Component)]
 pub struct Decide {
-    pub choose_action: fn(&Res<Time>) -> Option<Action>,
-    // pub locals: T,
+    pub choose_action: fn(&Res<Time>, locals: Locals) -> Option<Action>,
+    pub local_storage: Locals,
 }
 
 #[derive(Component)]
